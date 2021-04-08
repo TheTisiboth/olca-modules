@@ -116,6 +116,9 @@ public class Exchange extends AbstractEntity {
 	@OneToOne
 	@JoinColumn(name = "f_location")
 	public Location location;
+	
+	@Column(name = "wet_mass")
+	public String wetMass;
 
 	@Override
 	public String toString() {

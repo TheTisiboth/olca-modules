@@ -254,6 +254,10 @@ class ProcessImport {
 		if (flow == null || flow.referenceFlowProperty == null)
 			return null;
 		Unit unit = getFlowUnit(es2, flowRefId, flow);
+		var optionalProperty = es2.properties.stream().filter(p -> p.name.equals("wet mass")).findFirst();
+		if(optionalProperty.isPresent()) {
+			es2.wetMass = Double.toString(optionalProperty.get().amount);
+		}
 		var e = process.add(Exchange.of(flow, flow.referenceFlowProperty, unit));
 		e.description = es2.comment;
 		e.isInput = es2.inputGroup != null;

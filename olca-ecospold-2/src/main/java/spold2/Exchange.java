@@ -50,5 +50,7 @@ public abstract class Exchange {
 
 	@XmlElement(name = "property")
 	public final List<Property> properties = new ArrayList<>();
+	
+	public String wetMass;
 
 }
