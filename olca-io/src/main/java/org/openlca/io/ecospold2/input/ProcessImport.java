@@ -79,8 +79,7 @@ class ProcessImport {
 			String refId = RefId.forProcess(ds);
 			boolean contains = dao.contains(refId);
 			if (contains) {
-				log.trace("process {} is already in the database",
-						activity.id);
+				log.trace("process {} is already in the database", activity.id);
 				return;
 			}
 			log.trace("import process {}", activity.name);
@@ -100,8 +99,7 @@ class ProcessImport {
 				continue;
 			if (techFlow.outputGroup != 0)
 				continue;
-			if (techFlow.amount == null ||
-					techFlow.amount == 0)
+			if (techFlow.amount == null || techFlow.amount == 0)
 				continue;
 			refFlow = techFlow;
 			break;
@@ -116,14 +114,10 @@ class ProcessImport {
 		// map meta data
 		p.refId = refId;
 		p.name = getProcessName(ds);
-		ProcessType type = activity.type == 2
-				? ProcessType.LCI_RESULT
-				: ProcessType.UNIT_PROCESS;
+		ProcessType type = activity.type == 2 ? ProcessType.LCI_RESULT : ProcessType.UNIT_PROCESS;
 		p.processType = type;
-		String d = Joiner.on(" ").skipNulls().join(
-				RichText.join(activity.generalComment),
-				activity.includedActivitiesStart,
-				activity.includedActivitiesEnd,
+		String d = Joiner.on(" ").skipNulls().join(RichText.join(activity.generalComment),
+				activity.includedActivitiesStart, activity.includedActivitiesEnd,
 				RichText.join(activity.allocationComment));
 		p.description = d;
 
@@ -201,8 +195,7 @@ class ProcessImport {
 			String refId = e.flowId;
 			Flow flow = index.getFlow(refId);
 			if (flow == null) {
-				log.warn("could not create flow for {}",
-						e.flowId);
+				log.warn("could not create flow for {}", e.flowId);
 			}
 			createExchange(e, refId, flow, process);
 		}
@@ -212,8 +205,7 @@ class ProcessImport {
 		for (IntermediateExchange ie : Spold2.getProducts(ds)) {
 			if (ie.amount == 0 && config.skipNullExchanges)
 				continue;
-			boolean isRefFlow = ie.outputGroup != null
-					&& ie.outputGroup == 0;
+			boolean isRefFlow = ie.outputGroup != null && ie.outputGroup == 0;
 			String refId = ie.flowId;
 			Flow flow = index.getFlow(refId);
 			if (flow == null) {
@@ -235,8 +227,7 @@ class ProcessImport {
 			prices.map(ie, e);
 		}
 		if (p.quantitativeReference == null) {
-			log.warn("could not set a quantitative"
-					+ " reference for process {}", p.refId);
+			log.warn("could not set a quantitative" + " reference for process {}", p.refId);
 		}
 	}
 
@@ -249,16 +240,16 @@ class ProcessImport {
 		// return isNeg != index.isNegativeFlow(refId) && exchange.isInput();
 	}
 
-	private Exchange createExchange(spold2.Exchange es2,
-			String flowRefId, Flow flow, Process process) {
+	private Exchange createExchange(spold2.Exchange es2, String flowRefId, Flow flow, Process process) {
 		if (flow == null || flow.referenceFlowProperty == null)
 			return null;
 		Unit unit = getFlowUnit(es2, flowRefId, flow);
-		var optionalProperty = es2.properties.stream().filter(p -> p.name.equals("wet mass")).findFirst();
-		if(optionalProperty.isPresent()) {
-			es2.wetMass = Double.toString(optionalProperty.get().amount);
-		}
 		var e = process.add(Exchange.of(flow, flow.referenceFlowProperty, unit));
+		// Add a wet mass amount to the exchange, if it exists
+		var optionalWetMassProperty = es2.properties.stream().filter(p -> p.name.equals("wet mass")).findFirst();
+		if (optionalWetMassProperty.isPresent()) {
+			e.wetMass = optionalWetMassProperty.get().amount;
+		}
 		e.description = es2.comment;
 		e.isInput = es2.inputGroup != null;
 		double amount = es2.amount;
@@ -281,13 +272,11 @@ class ProcessImport {
 		PedigreeMatrix pm = es2.uncertainty.pedigreeMatrix;
 		if (pm == null)
 			return null;
-		return dqSystem.toString(pm.reliability, pm.completeness,
-				pm.temporalCorrelation,
-				pm.geographicalCorrelation, pm.technologyCorrelation);
+		return dqSystem.toString(pm.reliability, pm.completeness, pm.temporalCorrelation, pm.geographicalCorrelation,
+				pm.technologyCorrelation);
 	}
 
-	private Unit getFlowUnit(spold2.Exchange original,
-			String flowRefId, Flow flow) {
+	private Unit getFlowUnit(spold2.Exchange original, String flowRefId, Flow flow) {
 		if (!index.isMappedFlow(flowRefId))
 			return index.getUnit(original.unitId);
 		FlowProperty refProp = flow.referenceFlowProperty;
@@ -299,12 +288,10 @@ class ProcessImport {
 		return ug.referenceUnit;
 	}
 
-	private void mapFormula(spold2.Exchange original, Process process,
-			Exchange exchange, double factor) {
+	private void mapFormula(spold2.Exchange original, Process process, Exchange exchange, double factor) {
 		String formula = null;
 		String var = original.variableName;
-		if (Strings.notEmpty(var)
-				&& Parameters.contains(var, process.parameters)) {
+		if (Strings.notEmpty(var) && Parameters.contains(var, process.parameters)) {
 			formula = var;
 		} else if (Parameters.isValid(original.mathematicalRelation, config)) {
 			formula = original.mathematicalRelation;
@@ -318,8 +305,7 @@ class ProcessImport {
 			exchange.formula = factor + " * (" + formula + ")";
 	}
 
-	private void addActivityLink(IntermediateExchange input,
-			Exchange exchange) {
+	private void addActivityLink(IntermediateExchange input, Exchange exchange) {
 		String refId = RefId.linkID(input);
 		Long processId = index.getProcessId(refId);
 		if (processId != null) {
@@ -362,8 +348,7 @@ class ProcessImport {
 			String sys = repri.systemModelName.toLowerCase();
 			if (sys.contains("consequential")) {
 				model = "Consequential";
-			} else if (sys.contains("apos") ||
-					sys.contains("allocation at the point of substitution")) {
+			} else if (sys.contains("apos") || sys.contains("allocation at the point of substitution")) {
 				model = "APOS";
 			} else if (sys.contains("cut-off") || sys.contains("cutoff")) {
 				model = "Cutoff";

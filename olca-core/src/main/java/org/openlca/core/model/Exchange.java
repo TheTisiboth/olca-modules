@@ -118,7 +118,7 @@ public class Exchange extends AbstractEntity {
 	public Location location;
 	
 	@Column(name = "wet_mass")
-	public String wetMass;
+	public Double wetMass;
 
 	@Override
 	public String toString() {

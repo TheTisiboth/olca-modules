@@ -23,8 +23,8 @@ public abstract class Exchange {
 	public String casNumber;
 
 	/**
-	 * Amount is a reference type because it is optional as exchanges are also
-	 * used in the master data
+	 * Amount is a reference type because it is optional as exchanges are also used
+	 * in the master data
 	 */
 	@XmlAttribute
 	public Double amount;
@@ -50,7 +50,5 @@ public abstract class Exchange {
 
 	@XmlElement(name = "property")
 	public final List<Property> properties = new ArrayList<>();
-	
-	public String wetMass;
 
 }
