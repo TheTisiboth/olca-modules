@@ -8,6 +8,7 @@ option java_outer_classname = "DataFetchProto";
 option csharp_namespace = "ProtoLCA.Services";
 option go_package = ".;protolca";
 
+import "google/api/annotations.proto";
 import "olca.proto";
 import "commons.proto";
 
@@ -26,7 +27,9 @@ service DataFetchService {
   // Get (a page of) all data sets of a given type. If no page size is given
   // (page <= 0) it defaults to 100. An unset page (page <= 0) defaults to the
   // first page.
-  rpc GetAll(GetAllRequest) returns (GetAllResponse);
+  rpc GetAll(GetAllRequest) returns (GetAllResponse){
+  	  	option (google.api.http) = { get: "/datasets" };
+  }
 
   // Get all descriptors that match the given request.
   rpc GetDescriptors(GetDescriptorsRequest) returns (stream Ref);
