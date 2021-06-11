@@ -18,14 +18,14 @@ service DataFetchService {
   // of the requested type and ID exists in the database. An error is returned
   // if this is not the case.
   rpc Get(GetRequest) returns (DataSet){
-  	option (google.api.http) = { get: "/datasets/{id}" };
+  		option (google.api.http) = { get: "/datasets/{id}" };
   }
 
   // Get a data set by ID or name. Returns an empty data set if there is no such
   // data set in the database. If there are multiple data sets with the same
   // name in the database it returns the first of these data sets.
   rpc Find(FindRequest) returns (DataSet){
-  		option (google.api.http) = { get: "/datasets" };
+  		option (google.api.http) = { get: "/findDatasets" };
   }
 
   // Get (a page of) all data sets of a given type. If no page size is given
@@ -36,25 +36,35 @@ service DataFetchService {
   }
 
   // Get all descriptors that match the given request.
-  rpc GetDescriptors(GetDescriptorsRequest) returns (stream Ref);
+  rpc GetDescriptors(GetDescriptorsRequest) returns (stream Ref){
+  	  	option (google.api.http) = { get: "/descriptors" };
+  }
 
   // Search for data sets.
-  rpc Search(SearchRequest) returns (stream Ref);
+  rpc Search(SearchRequest) returns (stream Ref){
+  	  	option (google.api.http) = { get: "/searchDatasets" };
+  }
 
   // Get the descriptors of the data sets that are contained in a given
   // category. The category can be identified by its full path or its ID where
   // an empty string or "/" identifies the root category (or "none-category") of
   // the respective model type.
-  rpc GetCategoryContent(GetCategoryContentRequest) returns (stream Ref);
+  rpc GetCategoryContent(GetCategoryContentRequest) returns (stream Ref){
+  	  	option (google.api.http) = { get: "/category" };
+  }
 
   // Get the full category tree for the given model type.
-  rpc GetCategoryTree(GetCategoryTreeRequest) returns (CategoryTree);
+  rpc GetCategoryTree(GetCategoryTreeRequest) returns (CategoryTree){
+  	  	option (google.api.http) = { get: "/categoryTree" };
+  }
 
   // Get possible providers for the given flow. For products these are processes
   // with that product on the output side and for waste flows processes with
   // that waste flow on the input side. For elementary flows, an empty stream is
   // returned.
-  rpc GetProvidersFor(Ref) returns (stream Ref);
+  rpc GetProvidersFor(Ref) returns (stream Ref){
+  	  	option (google.api.http) = { get: "/providers" };
+  }
 }
 
 message GetRequest {
