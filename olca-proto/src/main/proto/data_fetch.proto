@@ -25,7 +25,7 @@ service DataFetchService {
   // data set in the database. If there are multiple data sets with the same
   // name in the database it returns the first of these data sets.
   rpc Find(FindRequest) returns (DataSet){
-  		option (google.api.http) = { get: "/findDatasets" };
+  		option (google.api.http) = { get: "/datasets/find" };
   }
 
   // Get (a page of) all data sets of a given type. If no page size is given
@@ -42,7 +42,7 @@ service DataFetchService {
 
   // Search for data sets.
   rpc Search(SearchRequest) returns (stream Ref){
-  	  	option (google.api.http) = { get: "/searchDatasets" };
+  	  	option (google.api.http) = { get: "/datasets/search" };
   }
 
   // Get the descriptors of the data sets that are contained in a given
@@ -50,12 +50,12 @@ service DataFetchService {
   // an empty string or "/" identifies the root category (or "none-category") of
   // the respective model type.
   rpc GetCategoryContent(GetCategoryContentRequest) returns (stream Ref){
-  	  	option (google.api.http) = { get: "/category" };
+  	  	option (google.api.http) = { get: "/categoryContents" };
   }
 
   // Get the full category tree for the given model type.
   rpc GetCategoryTree(GetCategoryTreeRequest) returns (CategoryTree){
-  	  	option (google.api.http) = { get: "/categoryTree" };
+  	  	option (google.api.http) = { get: "/categoryTrees" };
   }
 
   // Get possible providers for the given flow. For products these are processes

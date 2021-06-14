@@ -8,25 +8,37 @@ option java_outer_classname = "MappingsProto";
 option csharp_namespace = "ProtoLCA.Services";
 option go_package = ".;protolca";
 
+import "google/api/annotations.proto";
 import "olca.proto";
 import "google/protobuf/empty.proto";
 
 service FlowMapService {
 
   // Delete the flow map with the given name.
-  rpc Delete(FlowMapInfo) returns (google.protobuf.Empty);
+  rpc Delete(FlowMapInfo) returns (google.protobuf.Empty){
+  	  	option (google.api.http) = { delete: "/flowMaps" };
+  }
 
   // Get the flow map with the given name form the database.
-  rpc Get(FlowMapInfo) returns (FlowMap);
+  rpc Get(FlowMapInfo) returns (FlowMap){
+  	  	option (google.api.http) = { get: "/flowMaps/find" };
+  }
 
   // Get the information (basically just the names) of all flow maps that are
   // available in the database.
-  rpc GetAll(google.protobuf.Empty) returns (stream FlowMapInfo);
+  rpc GetAll(google.protobuf.Empty) returns (stream FlowMapInfo){
+  	  	option (google.api.http) = { get: "/flowMaps" };
+  }
 
   // Inserts the given flow map into the database. It overwrites an existing
   // flow map if there is a flow map with the same name already available in the
   // database.
-  rpc Put(FlowMap) returns (google.protobuf.Empty);
+  rpc Put(FlowMap) returns (google.protobuf.Empty){
+  	  	option (google.api.http) = {
+  	  		put: "/flowMaps"
+  	  		body: "*"
+  	  	};
+  }
 }
 
 message FlowMapInfo {

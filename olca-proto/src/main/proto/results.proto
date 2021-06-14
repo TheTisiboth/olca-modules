@@ -9,6 +9,7 @@ option java_outer_classname = "ResultServiceProto";
 option csharp_namespace = "ProtoLCA.Services";
 option go_package = ".;protolca";
 
+import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "olca.proto";
 import "result_types.proto";
@@ -16,33 +17,63 @@ import "result_types.proto";
 service ResultService {
 
   // Calculates a result for the given calculation setup.
-  rpc Calculate(CalculationSetup) returns (Result);
+  rpc Calculate(CalculationSetup) returns (Result){
+  	  	option (google.api.http) = {
+  	  		post: "/calculate"
+  	  		body: "*"
+  	  	};
+  }
 
   // Get all technosphere flows of the underlying product system of the given
   // result.
-  rpc GetTechFlows(Result) returns (stream TechFlow);
+  rpc GetTechFlows(Result) returns (stream TechFlow){
+  	  	option (google.api.http) = { get: "/technosphereFlows/{id}" };
+  }
 
   // Get the environmental flows of the given result.
-  rpc GetEnviFlows(Result) returns (stream EnviFlow);
+  rpc GetEnviFlows(Result) returns (stream EnviFlow){
+  	  	option (google.api.http) = { get: "/environmentalFlows/{id}" };
+  }
 
   // Get the impact categories of the given result.
-  rpc GetImpactCategories(Result) returns (stream Ref);
+  rpc GetImpactCategories(Result) returns (stream Ref){
+  	  	option (google.api.http) = { get: "/impactCategories/{id}" };
+  }
 
   // Get the inventory of the given result.
-  rpc GetTotalInventory(Result) returns (stream ResultValue);
+  rpc GetTotalInventory(Result) returns (stream ResultValue){
+  	  	option (google.api.http) = { get: "/inventories/{id}" };
+  }
 
   // Get the total impact assessment result of the given result.
-  rpc GetTotalImpacts(Result) returns (stream ResultValue);
+  rpc GetTotalImpacts(Result) returns (stream ResultValue){
+  	  	option (google.api.http) = { get: "/impactAssessments/{id}" };
+  }
 
   // Get the direct contribution of a TechFlow to a flow, impact, or cost
   // result. 'Direct' means that this is only the contribution that is
   // directly associated with the production of a product or treatment of
   // a waste flow excluding contributions of upstream and downstream processes.
-  rpc GetDirectContribution(TechFlowContributionRequest) returns (ResultValue);
+  rpc GetDirectContribution(TechFlowContributionRequest) returns (ResultValue){
+  	  	option (google.api.http) = {
+  	  		post: "/directContribution"
+  	  		body:"*"
+  	  	};
+  }
 
-  rpc GetTotalContribution(TechFlowContributionRequest) returns (ResultValue);
+  rpc GetTotalContribution(TechFlowContributionRequest) returns (ResultValue){
+  	  	option (google.api.http) = {
+  	  		post: "/totalContribution"
+  	  		body:"*"
+  	  	};
+  }
 
-  rpc GetTotalContributionOfOne(TechFlowContributionRequest) returns (ResultValue);
+  rpc GetTotalContributionOfOne(TechFlowContributionRequest) returns (ResultValue){
+  	  	option (google.api.http) = {
+  	  		post: "/totalContribution"
+  	  		body:"*"
+  	  	};
+  }
 
   // Get the used impact factors of a result. The request can be for:
   //
@@ -54,10 +85,19 @@ service ResultService {
   // Nothing is returned if no indicator and flow is given or if the result does
   // not have an impact assessment result.
   rpc GetImpactFactors(ImpactFactorRequest) returns
-      (stream ImpactFactorResponse);
+      (stream ImpactFactorResponse){
+  	  	option (google.api.http) = {
+  	  		post: "/impactFactors"
+  	  		body:"*"
+  	  	};
+  }
 
   // Disposes the given result on the server side.
-  rpc Dispose(Result) returns (google.protobuf.Empty);
+  rpc Dispose(Result) returns (google.protobuf.Empty){
+  	  	option (google.api.http) = {
+  	  		delete: "/results/{id}"
+  	  	};
+  }
 
 }
 
